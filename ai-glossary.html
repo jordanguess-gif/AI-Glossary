@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI & Developer Glossary</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #fafaf9;
+    --bg-card: #ffffff;
+    --bg-hover: #f5f5f0;
+    --bg-accent: #f0efe9;
+    --text-color: #1a1a2e;
+    --text-muted: #6b7280;
+    --text-light: #9ca3af;
+    --border: #e5e5dc;
+    --accent: #2563eb;
+    --accent-light: #dbeafe;
+    --accent-dark: #1d4ed8;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --orange: #d97706;
+    --orange-light: #fef3c7;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #111111;
+      --bg-card: #1a1a1a;
+      --bg-hover: #222222;
+      --bg-accent: #252525;
+      --text-color: #e5e5e5;
+      --text-muted: #9ca3af;
+      --text-light: #6b7280;
+      --border: #333333;
+      --accent: #60a5fa;
+      --accent-light: #1e3a5f;
+      --accent-dark: #93bbfd;
+      --green: #34d399;
+      --green-light: #064e3b;
+      --orange: #fbbf24;
+      --orange-light: #451a03;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', 'Segoe UI', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-color);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 800px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  /* Header */
+  .header { margin-bottom: 32px; }
+  .header-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .header-icon { font-size: 28px; }
+  h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+  .header-sub { color: var(--text-muted); font-size: 14px; line-height: 1.5; }
+  .header-hint { font-size: 13px; color: var(--text-light); }
+
+  /* Search */
+  .search-wrap { position: relative; margin-bottom: 28px; }
+  .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 16px; pointer-events: none; }
+  .search-input {
+    width: 100%; padding: 12px 40px 12px 42px; border: 1.5px solid var(--border);
+    border-radius: var(--radius); font-size: 15px; background: var(--bg-card);
+    color: var(--text-color); transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .search-input::placeholder { color: var(--text-light); }
+  .search-clear {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--text-light); cursor: pointer;
+    font-size: 18px; padding: 2px 6px; display: none;
+  }
+  .search-clear.visible { display: block; }
+
+  /* Category */
+  .categories { display: flex; flex-direction: column; gap: 12px; }
+  .cat-btn {
+    width: 100%; text-align: left; background: var(--bg-card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow-sm);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .cat-btn:hover { border-color: var(--accent); background: var(--bg-hover); }
+  .cat-btn.active { border-color: var(--accent); background: var(--accent-light); }
+  .cat-icon { font-size: 22px; flex-shrink: 0; }
+  .cat-info { flex: 1; min-width: 0; }
+  .cat-name { font-weight: 600; font-size: 15px; color: var(--text-color); }
+  .cat-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .cat-meta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .cat-count { font-size: 12px; color: var(--text-light); font-weight: 500; }
+  .cat-chevron {
+    color: var(--text-light); font-size: 14px; transition: transform 0.2s; display: inline-block;
+  }
+  .cat-chevron.open { transform: rotate(180deg); }
+
+  /* Terms */
+  .terms-list { margin-top: 8px; margin-left: 12px; border-left: 2px solid var(--border); padding-left: 16px; }
+  .term-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+    margin: 0 0 8px 0; overflow: hidden; transition: all 0.2s;
+  }
+  .term-header {
+    padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between;
+    align-items: center; transition: background 0.15s; user-select: none;
+  }
+  .term-header:hover { background: var(--bg-hover); }
+  .term-name { font-weight: 600; font-size: 14px; }
+  .term-chevron { color: var(--text-light); font-size: 13px; transition: transform 0.2s; display: inline-block; }
+  .term-chevron.open { transform: rotate(180deg); }
+  .term-body { padding: 0 18px 18px; display: none; }
+  .term-body.open { display: block; }
+  .label {
+    display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 6px;
+  }
+  .label-def { background: var(--accent-light); color: var(--accent); }
+  .label-ex { background: var(--green-light); color: var(--green); }
+  .label-link { background: var(--orange-light); color: var(--orange); }
+  .term-section { margin-bottom: 14px; }
+  .term-section:last-child { margin-bottom: 0; }
+  .def-text { font-size: 13.5px; line-height: 1.65; color: var(--text-color); }
+  .ex-text { font-size: 13px; line-height: 1.6; color: var(--text-muted); font-style: italic; }
+  .deep-link {
+    font-size: 13px; font-weight: 500; color: var(--accent); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .deep-link:hover { text-decoration: underline; }
+  .deep-link-arrow { font-size: 11px; }
+
+  /* No results */
+  .no-results { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+  .no-results-icon { font-size: 32px; display: block; margin-bottom: 8px; }
+  .no-results-hint { font-size: 13px; color: var(--text-light); margin-top: 6px; }
+
+  /* Divider */
+  .divider { border: none; border-top: 1.5px solid var(--border); margin: 36px 0; }
+
+  /* Suggest Form */
+  .suggest-box {
+    background: var(--bg-card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-sm);
+  }
+  .suggest-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .suggest-icon { font-size: 20px; }
+  .suggest-title { font-size: 18px; font-weight: 700; }
+  .suggest-desc { margin: 4px 0 18px; font-size: 13px; color: var(--text-muted); }
+  .form-fields { display: flex; flex-direction: column; gap: 10px; }
+  .input-field {
+    width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 14px; background: var(--bg-card); color: var(--text-color);
+    font-family: 'DM Sans', sans-serif; transition: border-color 0.2s;
+  }
+  .input-field:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .input-field::placeholder { color: var(--text-light); }
+  .form-actions { display: flex; align-items: center; gap: 12px; }
+  .submit-btn {
+    padding: 10px 24px; background: var(--accent); color: white; border: none;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .submit-btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .submit-msg { font-size: 13px; color: var(--green); font-weight: 500; }
+
+  /* Suggestions list */
+  .suggestions-toggle {
+    background: none; border: none; cursor: pointer; font-size: 13px; font-weight: 600;
+    color: var(--text-muted); padding: 0; display: flex; align-items: center; gap: 6px;
+    font-family: 'DM Sans', sans-serif; margin-top: 20px;
+  }
+  .toggle-arrow { transition: transform 0.2s; display: inline-block; }
+  .toggle-arrow.open { transform: rotate(90deg); }
+  .suggestions-list { margin-top: 10px; display: none; }
+  .suggestions-list.open { display: block; }
+  .suggestion-chip {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 10px 14px; background: var(--bg-accent); border-radius: 8px;
+    border: 1px solid var(--border); margin-bottom: 6px;
+  }
+  .suggestion-term { font-weight: 600; font-size: 13px; }
+  .suggestion-ctx { font-size: 12px; color: var(--text-muted); margin-left: 8px; }
+  .suggestion-date { font-size: 11px; color: var(--text-light); margin-left: 8px; }
+  .remove-btn {
+    background: none; border: none; color: var(--text-light); cursor: pointer;
+    font-size: 16px; padding: 2px 6px; border-radius: 4px; transition: all 0.15s;
+    line-height: 1; flex-shrink: 0;
+  }
+  .remove-btn:hover { background: #fee2e2; color: #dc2626; }
+
+  /* Footer */
+  .footer { text-align: center; font-size: 11px; color: var(--text-light); margin-top: 28px; }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-row">
+      <span class="header-icon">📖</span>
+      <h1>AI & Developer Glossary</h1>
+    </div>
+    <p class="header-sub">
+      <span id="term-count"></span> terms across <span id="cat-count"></span> categories — a living reference for the team.
+      <br><span class="header-hint">Can't find a term? Scroll down to suggest one.</span>
+    </p>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="search" placeholder="Search terms, definitions..." autocomplete="off">
+    <button class="search-clear" id="search-clear" onclick="clearSearch()">×</button>
+  </div>
+
+  <!-- Categories -->
+  <div class="categories" id="categories"></div>
+
+  <!-- No results -->
+  <div class="no-results" id="no-results" style="display:none;">
+    <span class="no-results-icon">🔍</span>
+    <p>No terms match "<strong id="no-results-query"></strong>"</p>
+    <p class="no-results-hint">Try a different search, or suggest this term below.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Suggest a Term -->
+  <div class="suggest-box">
+    <div class="suggest-header">
+      <span class="suggest-icon">💡</span>
+      <h2 class="suggest-title">Suggest a Term</h2>
+    </div>
+    <p class="suggest-desc">Know a term that should be here? Drop it below and Jordan will review and add it.</p>
+    <div class="form-fields">
+      <input class="input-field" id="new-term" placeholder="Term or concept (e.g., RAG, LangChain, Docker)">
+      <input class="input-field" id="new-context" placeholder="Optional: Why it'd be useful, or where you heard it">
+      <div class="form-actions">
+        <button class="submit-btn" id="submit-btn" onclick="submitSuggestion()" disabled>Submit Suggestion</button>
+        <span class="submit-msg" id="submit-msg"></span>
+      </div>
+    </div>
+
+    <button class="suggestions-toggle" id="suggestions-toggle" onclick="toggleSuggestions()" style="display:none;">
+      <span class="toggle-arrow" id="toggle-arrow">▸</span>
+      Pending suggestions (<span id="suggestions-count">0</span>)
+    </button>
+    <div class="suggestions-list" id="suggestions-list"></div>
+  </div>
+
+  <p class="footer">Last updated: March 2026 · Maintained by Jordan Guess</p>
+</div>
+
+<script>
+const GLOSSARY = [
+  {
+    id: "dev-tools", name: "Developer Tools & Workflows", icon: "⚙️",
+    description: "Foundational tools engineers and technical teams use daily",
+    terms: [
+      { term: "CLI (Command Line Interface)", definition: "A text-based interface where you type commands to interact with your computer instead of clicking icons. Think of it as talking to your computer by typing instructions rather than pointing and clicking.", example: "Opening Terminal on a Mac and typing \"git status\" to check which files have changed in your project.", link: "https://developer.mozilla.org/en-US/docs/Learn_server-side/First_steps/Command_line", linkLabel: "MDN: Command Line Crash Course" },
+      { term: "Git", definition: "A version control system that tracks every change made to code over time. It lets multiple people work on the same project without overwriting each other's work, and lets you roll back to any previous version if something breaks.", example: "A developer runs \"git commit\" to save a snapshot of their code, then \"git push\" to share it with the team. If the new code introduces a bug, they can revert to the previous commit.", link: "https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F", linkLabel: "Git Documentation: Getting Started" },
+      { term: "Repo (Repository)", definition: "A storage location for a project's code, files, and the entire history of changes made to them. Hosted on platforms like GitHub or GitLab so teams can collaborate.", example: "The OpenClaw project lives in a public GitHub repo at github.com/openclaw/openclaw — anyone can view the code, suggest changes, or fork it to create their own version.", link: "https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories", linkLabel: "GitHub Docs: About Repositories" },
+      { term: "Markdown", definition: "A lightweight formatting language that uses simple symbols (like # for headings, ** for bold, - for bullet points) to style plain text. Widely used in documentation, README files, Slack messages, and AI prompts.", example: "Writing \"## Project Goals\" in a .md file creates a styled heading without needing a word processor. Slack uses a subset of Markdown — wrapping text in *asterisks* makes it bold.", link: "https://www.markdownguide.org/getting-started/", linkLabel: "Markdown Guide: Getting Started" },
+      { term: "project.md", definition: "A markdown file placed in a project's root directory that provides context to AI coding agents and human collaborators. It describes the project's purpose, architecture, conventions, and key decisions — acting as a briefing document so anyone (or any AI) can quickly understand and contribute to the project.", example: "Claude Code looks for a CLAUDE.md file in your repo root. If it finds one describing your coding standards and architecture, it follows those conventions when generating code — similar to how a new team member would read an onboarding doc.", link: "https://docs.anthropic.com/en/docs/claude-code/memory", linkLabel: "Anthropic Docs: Claude Code Memory Files" }
+    ]
+  },
+  {
+    id: "ai-products", name: "AI Products & Platforms", icon: "🤖",
+    description: "Specific AI tools, products, and platforms shaping the landscape",
+    terms: [
+      { term: "MCP (Model Context Protocol)", definition: "An open protocol created by Anthropic that standardizes how AI models connect to external tools and data sources. Think of it like USB for AI — a universal plug that lets any AI model talk to any compatible service (Slack, Jira, Google Drive, databases, etc.) without custom integrations for each one.", example: "When Claude connects to your Slack workspace via MCP, it can search channels, read messages, and draft replies — all through a standardized protocol rather than a bespoke API integration.", link: "https://modelcontextprotocol.io/introduction", linkLabel: "MCP Official Documentation" },
+      { term: "OpenAI Codex", definition: "OpenAI's cloud-based coding agent that can autonomously work on software engineering tasks. You assign it a task (fix a bug, write a feature, refactor code), and it spins up a sandboxed environment, writes code, runs tests, and opens a pull request — operating asynchronously like a junior developer you can assign tickets to.", example: "You assign Codex a task: \"Add input validation to the signup form and write tests.\" It creates a branch, writes the validation logic, runs the test suite, and opens a PR for your review — all without you writing a line of code.", link: "https://openai.com/index/introducing-codex/", linkLabel: "OpenAI: Introducing Codex" },
+      { term: "OpenClaw", definition: "An open-source personal AI assistant that runs on your own machine (Mac, Windows, or Linux) and connects to chat apps you already use — WhatsApp, Telegram, Discord, Slack, Signal, or iMessage. It has persistent memory, can browse the web, manage files, run shell commands, and extend itself via community-built skills and plugins. Created by Peter Steinberger.", example: "You message your OpenClaw instance on Telegram: \"Check my calendar for conflicts tomorrow and draft a reschedule email for any overlaps.\" It accesses your calendar, identifies the conflicts, drafts the emails, and reports back — all from your phone.", link: "https://openclaw.ai/", linkLabel: "OpenClaw Official Site" }
+    ]
+  },
+  {
+    id: "agent-arch", name: "Agent Architecture", icon: "🧠",
+    description: "Concepts behind how AI agents are built, managed, and orchestrated",
+    terms: [
+      { term: "Agent Harness", definition: "The software infrastructure that wraps around an AI model to manage its full lifecycle — including tool access, memory, conversation state, error handling, and interactions with external systems. The harness is what turns a raw language model into a functional agent that can actually do things in the real world.", example: "An agent harness might manage: which tools the AI can call (Slack, Jira, email), what it remembers between conversations, retry logic if a tool call fails, and safety guardrails that prevent destructive actions. Without the harness, the model just generates text — with it, the model can take action.", link: "https://docs.anthropic.com/en/docs/build-with-claude/agentic-systems", linkLabel: "Anthropic Docs: Building Agentic Systems" },
+      { term: "Cron Job", definition: "A time-based scheduler built into Unix/Linux systems that automatically runs commands or scripts on a set schedule. Named after \"chronos\" (Greek for time). Essential for any recurring automated task.", example: "You set up a cron job that runs every 30 minutes: \"Check Zendesk for new high-priority tickets and post a summary to the #cs-alerts Slack channel.\"", link: "https://en.wikipedia.org/wiki/Cron", linkLabel: "Wikipedia: Cron" },
+      { term: "Process Management", definition: "The practice of keeping a program running reliably over time — automatically restarting it if it crashes, starting it when the machine boots up, monitoring its health, and managing its resource usage. Critical for any always-on service or agent.", example: "You deploy an AI agent on a cloud VM. Using a process manager like systemd or pm2, the agent automatically restarts if it crashes at 3am, starts up again after a server reboot, and logs errors so you can debug issues later.", link: "https://pm2.keymetrics.io/docs/usage/quick-start/", linkLabel: "PM2 Documentation: Quick Start" }
+    ]
+  },
+  {
+    id: "infrastructure", name: "Infrastructure & Deployment", icon: "☁️",
+    description: "How and where AI tools and agents actually run",
+    terms: [
+      { term: "Local Deployment", definition: "Running software (like an AI agent) directly on your own physical machine — your laptop, desktop, or a Mac Mini in your closet. The trade-off: it's free and private, but when the machine is off, the agent stops. Best for development, testing, or personal-use agents that don't need 24/7 uptime.", example: "You install OpenClaw on your MacBook. It works great while you're working — responding to Telegram messages, managing your calendar — but when you close the laptop and head home, the agent goes to sleep too.", link: "https://docs.openclaw.ai/getting-started", linkLabel: "OpenClaw Docs: Getting Started" },
+      { term: "Cloud VM (Virtual Machine)", definition: "A rented computer running in a data center somewhere in the world. You access it remotely (via SSH) and it runs 24/7 regardless of whether your personal machine is on. Providers include AWS, Google Cloud, Azure, DigitalOcean, and Hetzner. Costs typically range from $5–25/month for basic agent workloads.", example: "You spin up a $12/month DigitalOcean droplet, install your AI agent on it, and it runs continuously — checking emails, monitoring Slack, running scheduled tasks — even while you sleep. You manage it by SSH-ing in from your laptop.", link: "https://www.digitalocean.com/community/tutorials/what-is-a-virtual-machine", linkLabel: "DigitalOcean: What is a Virtual Machine?" },
+      { term: "SSH (Secure Shell)", definition: "A cryptographic network protocol that lets you securely log into and control a remote computer over an unsecured network. It encrypts everything — your commands, the responses, passwords — so no one can eavesdrop. The standard way to manage servers and cloud VMs.", example: "You type \"ssh user@my-server.com\" in your terminal and you're now controlling your cloud VM as if you were sitting in front of it. You can install software, check logs, restart services — all remotely and securely.", link: "https://www.ssh.com/academy/ssh/protocol", linkLabel: "SSH Academy: SSH Protocol" },
+      { term: "API Costs", definition: "The fees charged by AI providers (Anthropic, OpenAI, Google, etc.) each time your application sends a request to their model. Billed per token (roughly per word) processed. These are separate from infrastructure costs (servers, VMs) — you pay for compute time even if you're running on your own machine.", example: "Your CS agent sends 100 customer health summaries per day through Claude's API. At roughly $0.01–0.05 per summary (depending on length and model), that's $1–5/day in API costs — on top of whatever you pay for the VM running the agent.", link: "https://www.anthropic.com/pricing", linkLabel: "Anthropic Pricing" }
+    ]
+  }
+];
+
+// State
+let expandedCat = null;
+let expandedTerm = null;
+let suggestions = [];
+let showSuggestionsPanel = false;
+
+// Init
+const STORE_KEY = 'ai-glossary-suggestions';
+function loadSuggestions() {
+  try { suggestions = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch { suggestions = []; }
+}
+function saveSuggestions() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(suggestions)); } catch {}
+}
+
+function init() {
+  loadSuggestions();
+  const total = GLOSSARY.reduce((s, c) => s + c.terms.length, 0);
+  document.getElementById('term-count').textContent = total;
+  document.getElementById('cat-count').textContent = GLOSSARY.length;
+  document.getElementById('new-term').addEventListener('input', () => {
+    document.getElementById('submit-btn').disabled = !document.getElementById('new-term').value.trim();
+  });
+  document.getElementById('search').addEventListener('input', (e) => {
+    document.getElementById('search-clear').classList.toggle('visible', !!e.target.value);
+    render();
+  });
+  render();
+  renderSuggestions();
+}
+
+function clearSearch() {
+  document.getElementById('search').value = '';
+  document.getElementById('search-clear').classList.remove('visible');
+  render();
+}
+
+function render() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const container = document.getElementById('categories');
+  const noResults = document.getElementById('no-results');
+  let html = '';
+  let anyMatch = false;
+
+  GLOSSARY.forEach(cat => {
+    const filtered = q
+      ? cat.terms.filter(t => t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q))
+      : cat.terms;
+    if (q && filtered.length === 0) return;
+    anyMatch = true;
+    const isOpen = expandedCat === cat.id || !!q;
+
+    html += `<div>
+      <button class="cat-btn ${isOpen ? 'active' : ''}" onclick="toggleCat('${cat.id}')">
+        <span class="cat-icon">${cat.icon}</span>
+        <div class="cat-info">
+          <div class="cat-name">${cat.name}</div>
+          <div class="cat-desc">${cat.description}</div>
+        </div>
+        <div class="cat-meta">
+          <span class="cat-count">${filtered.length}</span>
+          <span class="cat-chevron ${isOpen ? 'open' : ''}">▾</span>
+        </div>
+      </button>`;
+
+    if (isOpen) {
+      html += '<div class="terms-list">';
+      filtered.forEach((t, idx) => {
+        const key = `${cat.id}-${idx}`;
+        const tOpen = expandedTerm === key || !!q;
+        html += `<div class="term-card">
+          <div class="term-header" onclick="toggleTerm('${key}')">
+            <span class="term-name">${esc(t.term)}</span>
+            <span class="term-chevron ${tOpen ? 'open' : ''}">▾</span>
+          </div>
+          <div class="term-body ${tOpen ? 'open' : ''}">
+            <div class="term-section">
+              <div class="label label-def">Definition</div>
+              <p class="def-text">${esc(t.definition)}</p>
+            </div>
+            <div class="term-section">
+              <div class="label label-ex">Example</div>
+              <p class="ex-text">${esc(t.example)}</p>
+            </div>
+            <div class="term-section">
+              <div class="label label-link">Deep Dive</div>
+              <a class="deep-link" href="${t.link}" target="_blank" rel="noopener noreferrer">
+                ${esc(t.linkLabel)} <span class="deep-link-arrow">↗</span>
+              </a>
+            </div>
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+
+  if (q && !anyMatch) {
+    noResults.style.display = 'block';
+    document.getElementById('no-results-query').textContent = document.getElementById('search').value;
+  } else {
+    noResults.style.display = 'none';
+  }
+}
+
+function toggleCat(id) {
+  if (document.getElementById('search').value.trim()) return;
+  expandedCat = expandedCat === id ? null : id;
+  expandedTerm = null;
+  render();
+}
+
+function toggleTerm(key) {
+  if (document.getElementById('search').value.trim()) return;
+  expandedTerm = expandedTerm === key ? null : key;
+  render();
+}
+
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function submitSuggestion() {
+  const termEl = document.getElementById('new-term');
+  const ctxEl = document.getElementById('new-context');
+  if (!termEl.value.trim()) return;
+  suggestions.push({
+    id: Date.now(),
+    term: termEl.value.trim(),
+    context: ctxEl.value.trim(),
+    submittedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  });
+  saveSuggestions();
+  termEl.value = '';
+  ctxEl.value = '';
+  document.getElementById('submit-btn').disabled = true;
+  const msg = document.getElementById('submit-msg');
+  msg.textContent = '✓ Submitted! Jordan will review and add it to the glossary.';
+  setTimeout(() => { msg.textContent = ''; }, 3000);
+  renderSuggestions();
+}
+
+function removeSuggestion(id) {
+  suggestions = suggestions.filter(s => s.id !== id);
+  saveSuggestions();
+  renderSuggestions();
+}
+
+function toggleSuggestions() {
+  showSuggestionsPanel = !showSuggestionsPanel;
+  document.getElementById('toggle-arrow').classList.toggle('open', showSuggestionsPanel);
+  document.getElementById('suggestions-list').classList.toggle('open', showSuggestionsPanel);
+}
+
+function renderSuggestions() {
+  const toggle = document.getElementById('suggestions-toggle');
+  const list = document.getElementById('suggestions-list');
+  document.getElementById('suggestions-count').textContent = suggestions.length;
+
+  if (suggestions.length === 0) {
+    toggle.style.display = 'none';
+    list.innerHTML = '';
+    return;
+  }
+  toggle.style.display = 'flex';
+  list.innerHTML = suggestions.map(s => `
+    <div class="suggestion-chip">
+      <div>
+        <span class="suggestion-term">${esc(s.term)}</span>
+        ${s.context ? `<span class="suggestion-ctx">— ${esc(s.context)}</span>` : ''}
+        <span class="suggestion-date">${esc(s.submittedAt)}</span>
+      </div>
+      <button class="remove-btn" onclick="removeSuggestion(${s.id})" title="Remove">×</button>
+    </div>
+  `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
